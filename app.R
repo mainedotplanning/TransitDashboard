@@ -68,6 +68,10 @@ variable = list("Annual_Unlinked_Trips" = "Annual_Unlinked_Trips",
 
 load("data/maine_transit_stopsandroutes.rData" )
 
+
+GTFS_routes <- st_transform(GTFS_routes, 4326)
+
+
 # Define UI
 ui <- page_navbar(
   
@@ -326,6 +330,10 @@ server <- function(input, output, session) {
       addProviderTiles(providers$CartoDB.Positron, group = "Light Canvas")  %>%
       addTiles(group = "OpenStreetMap")  %>%
       setView(lng = -68.5, lat = 45.3, zoom = 7) %>%
+      # fitBounds(lng1 = GTFS_routes$xmin,
+      #           lat1 = GTFS_routes$ymin,
+      #           lng2 = GTFS_routes$xmax,
+      #           lat2 = GTFS_routes$ymax)%>%
       addLayersControl(
         baseGroups = c("Light Canvas", "OpenStreetMap"),
         overlayGroups = c("Routes", "Stops", "Walksheds"),
@@ -344,11 +352,15 @@ server <- function(input, output, session) {
     
     # subset routes for bbox; make sure there are geometries
     agency_routes <- GTFS_routes[GTFS_routes$Agency_Name == input$agency, ]
+    
     if (nrow(agency_routes) == 0) {
       return()
     }
     
     agency_bbox <- st_bbox(agency_routes)
+    
+    
+    print(st_bbox( GTFS_routes[GTFS_routes$Agency_Name == input$agency, ] ))
     
     # Clear previous route/stop layers and zoom to agency using fitBounds
     leafletProxy("serviceMap") %>%
@@ -358,8 +370,10 @@ server <- function(input, output, session) {
       fitBounds(lng1 = agency_bbox$xmin,
                 lat1 = agency_bbox$ymin,
                 lng2 = agency_bbox$xmax,
-                lat2 = agency_bbox$ymax)
+                lat2 = agency_bbox$ymax) #%>%
+     # setZoom(10)
   })
+  
   
   # Draw selected routes
   observeEvent(input$routes, {
@@ -389,3 +403,6 @@ server <- function(input, output, session) {
 
 # Run the app
 shinyApp(ui, server)
+
+# Run once to publish to Posit Connect Cloud
+# rsconnect::writeManifest()
