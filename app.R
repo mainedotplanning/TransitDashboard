@@ -1,12 +1,11 @@
 # Load required libraries
 library(shiny)
+library(tidyverse)
 library(bslib)
-library(ggplot2)
-library(dplyr)
 library(paletteer)
 library(sf)
 library(leaflet)
-library(tidyr)
+
 
 
 # Run once to publish to Posit Connect Cloud
