@@ -2,14 +2,15 @@
 library(shiny)
 library(bslib)
 library(ggplot2)
-library(tmap)
 library(dplyr)
-library(tidyverse)
 library(paletteer)
-library(scales)
 library(sf)
-library(thematic)
 library(leaflet)
+
+
+# Run once to publish to Posit Connect Cloud
+#rsconnect::writeManifest()
+
 
 # Prepare dataset
 
@@ -265,63 +266,7 @@ server <- function(input, output, session) {
   
   
   
-  
-  # # ------------------map plots----------------------------
-  # 
-  # 
-  # 
-  # output$serviceMap <- renderLeaflet({
-  #   leaflet() %>%
-  #     addProviderTiles(providers$CartoDB.Positron, group= "Light Canvas")  %>%
-  #     addTiles(group= "OpenStreetMap")  %>%
-  #     setView(lng = -68.5,lat=45.3, zoom = 7) %>%
-  #     addLayersControl(
-  #       baseGroups = c( "Light Canvas", "OpenStreetMap"),
-  #       overlayGroups = c("Routes","Stops", "Walksheds" ),
-  #       options = layersControlOptions(collapsed = FALSE), position = "topright") 
-  # })
-  # 
-  # 
-  # 
-  # 
-  # # Update checkbox choices based on selected category
-  # observeEvent(input$agency, {
-  #   
-  #   filtered_routes <- unique(GTFS_routes$route_long[GTFS_routes$Agency_Name == input$agency])
-  #   updateCheckboxGroupInput(session, "routes", choices = filtered_routes)
-  #   
-  #   agency_routes <- GTFS_routes[GTFS_routes$Agency_Name == input$agency,]
-  #   agency_bbox = st_bbox(agency_routes)
-  #   
-  #   # Update map markers based on filtered data - change to zoom to agency and select routes in next step. 
-  #   leafletProxy("serviceMap") %>%
-  #     clearShapes() %>%
-  #     setView(lng = agency_bbox$xmin, lat = agency_bbox$ymin, zoom = 13)
-  #   
-  # })
-  # 
-  # 
-  # # Update map on selected routes
-  # observeEvent(input$routes, {
-  #   selected_routes <- GTFS_routes$route_long[GTFS_routes$route_long == input$routes]
-  #   
-  #   mapped_routes <- GTFS_routes[GTFS_routes$route_long == input$routes,]
-  #   
-  #   # Update map markers based on filtered data - change to zoom to agency and select routes in next step. 
-  #   leafletProxy("serviceMap") %>%
-  #     addPolylines(data = mapped_routes,
-  #                  color = ~mappal(mapped_routes$Agency_Name),
-  #                  opacity = 1,
-  #                  popup = ~paste0("Agency: ", as.character(mapped_routes$Agency_Name), "<br/>",
-  #                                  "Route: ", as.character(mapped_routes$route_long)),
-  #                  group = "Routes"
-  #     )
-  #   
-  # })
-  # 
-  
-  
-  
+
   
   # ------------------map plots----------------------------
   
@@ -403,6 +348,3 @@ server <- function(input, output, session) {
 
 # Run the app
 shinyApp(ui, server)
-
-# Run once to publish to Posit Connect Cloud
-# rsconnect::writeManifest()
