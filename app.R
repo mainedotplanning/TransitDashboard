@@ -6,6 +6,7 @@ library(dplyr)
 library(paletteer)
 library(sf)
 library(leaflet)
+library(tidyr)
 
 
 # Run once to publish to Posit Connect Cloud
